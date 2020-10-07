@@ -23,7 +23,7 @@
       </h1>
 
       <div>
-        <button>
+        <button v-on:click="createRoom">
           Tạo Meeting
         </button>
 
@@ -32,10 +32,10 @@
         </button>
       </div>
 
-      <div></div>
-      <h1>
-        {{message}}
-      </h1>
+      <div v-if="roomId">
+        Ahihi, hãy gửi link này cho bạn bè join room nhé <a v-bind:href="roomUrl" target="_blank">{{roomUrl}}</a>
+        {{roomId}}
+      </div>
     </div>
   </body>
   <script src="/api.js"></script>
