@@ -17,9 +17,9 @@
     <script src="https://cdn.stringee.com/sdk/web/2.2.1/stringee-web-sdk.min.js"></script>
   </head>
   <body>
-    <div id="app">
+    <div v-cloak id="app">
       <h1>
-        Ứng dụng Clone Zoom cực cool ngầu :3
+        Ứng dụng Clone Zoom cực cool ngầu :3. Welcome {{userId}}
       </h1>
 
       <div>
@@ -32,9 +32,12 @@
         </button>
       </div>
 
-      <div v-if="roomId">
+      <div v-if="!joinRoom && roomId">
         Ahihi, hãy gửi link này cho bạn bè join room nhé <a v-bind:href="roomUrl" target="_blank">{{roomUrl}}</a>
-        {{roomId}}
+      </div>
+      
+      <div v-if="joinRoom && roomId">
+        Bạn đã gia nhập room {{roomId}}
       </div>
     </div>
   </body>

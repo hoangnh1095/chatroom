@@ -2,11 +2,23 @@ const vm = new Vue({
   el: "#app",
   data: {
     message: "🐵 Hello World 🔮",
-    roomId: ''
+    userId: '',
+    roomId: '',
+    joinRoom: false,
   },
   computed: {
     roomUrl: function() {
       return `https://${location.hostname}?room=${this.roomId}`
+    }
+  },
+  async mounted() {
+    this.userId = window.prompt('Bạn tên gì ahihi?')
+    
+    const urlParams = new URLSearchParams(location.search)
+    const roomId = urlParams.get('room')
+    if (roomId) {
+      this.roomId = roomId;
+      this.joinRoom = true;
     }
   },
   methods: {
