@@ -1,6 +1,8 @@
-new Vue({
+const vm = new Vue({
    el: '#app',
-            data: {
-                message: '🐵 Hello World 🔮'
-            }
+    data: {
+      message: '🐵 Hello World 🔮'
+    }
 })
+
+vm.message = 'hoang_cute'
