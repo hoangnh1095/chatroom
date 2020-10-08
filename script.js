@@ -12,7 +12,7 @@ const vm = new Vue({
     }
   },
   async mounted() {
-    this.userId = window.prompt('Bạn tên gì ahihi?')
+    this.userId = 'hoang dep trai' // window.prompt('Bạn tên gì ahihi?')
     
     const urlParams = new URLSearchParams(location.search)
     const roomId = urlParams.get('room')
