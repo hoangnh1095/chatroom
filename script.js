@@ -3,7 +3,10 @@ const vm = new Vue({
   data: {
     message: "🐵 Hello World 🔮",
     userId: '',
+    userToken: '',
     roomId: '',
+    roomToken: '',
+    stringeeClient: undefined,
     joinRoom: false,
   },
   computed: {
@@ -12,6 +15,8 @@ const vm = new Vue({
     }
   },
   async mounted() {
+    api.setRestToken()
+    
     this.userId = 'hoang dep trai' // window.prompt('Bạn tên gì ahihi?')
     
     const urlParams = new URLSearchParams(location.search)
@@ -24,12 +29,16 @@ const vm = new Vue({
   methods: {
     login: async function() {
       // Lay token tu user_id
+      api.getUserToken(this.userId)
     },
     createRoom: async function () {
-      const room = await createRoom()
+      const room = await api.createRoom()
       const {roomId} = room
+      const roomToken = await api.getRoomToken(roomId) 
+      
       this.roomId = roomId
-      console.log({roomId})
+      this.roomToken = roomToken
+      console.log({roomId, roomToken})
       
       // Create xong join room lun
     },

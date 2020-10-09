@@ -1,17 +1,15 @@
 const PROJECT_ID = "SK5k11B6oUJvZyFxEHY1dexbjN7AR6JKFt";
 const PROJECT_SECRET = "YlJrUUh6bDJYcFZ2bVRiMTJQbjZHWU1lUVduODZZ";
-const TOKEN =
-  "eyJjdHkiOiJzdHJpbmdlZS1hcGk7dj0xIiwidHlwIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiJTSzVrMTFCNm9VSnZaeUZ4RUhZMWRleGJqTjdBUjZKS0Z0LTE2MDIwODgzNTkiLCJpc3MiOiJTSzVrMTFCNm9VSnZaeUZ4RUhZMWRleGJqTjdBUjZKS0Z0IiwiZXhwIjoxNjAyMTc0NzU5LCJyZXN0X2FwaSI6dHJ1ZX0.HuGbYe66gaaV_JM4Qto6SwPYWr-AMhvq-k9jYMVdz-k";
 const BASE_URL = "https://api.stringee.com/v1/room2";
 
 class API {
-  constructor(projectID, projectSecret) {
-    this.projectID = projectID;
+  constructor(projectId, projectSecret) {
+    this.projectId = projectId;
     this.projectSecret = projectSecret;
-    this.restToken = '';
+    this.restToken = "";
   }
 
-  async  createRoom() {
+  async createRoom() {
     const roomName = Math.random().toFixed(4);
     const response = await axios.post(
       `${BASE_URL}/create`,
@@ -20,9 +18,7 @@ class API {
         uniqueName: roomName
       },
       {
-        headers: {
-          "X-STRINGEE-AUTH": TOKEN
-        }
+        headers: this._authHeader()
       }
     );
 
@@ -33,9 +29,7 @@ class API {
 
   async listRoom() {
     const response = await axios.get(`${BASE_URL}/list`, {
-      headers: {
-        "X-STRINGEE-AUTH": TOKEN
-      }
+      headers: this._authHeader()
     });
 
     const rooms = response.data.list;
@@ -43,24 +37,53 @@ class API {
     return rooms;
   }
 
-  async getRestToken() {
-    const response = await axios.get('https://v2.stringee.com/web-sdk-conference-samples/php/token_helper.php', {
-      params: {
-        keySid: this.projectID,
-        keySecret: this.projectSecret,
-        rest: true  
+  async setRestToken() {
+    const tokens = await this._getToken({ rest: true });
+    const restToken = tokens.rest_access_token;
+    this.restToken = restToken;
+
+    return restToken;
+  }
+  
+  async getUserToken(userId) {
+    const tokens = await this._getToken({userId})
+    return tokens.access_token
+  }
+  
+  async getRoomToken(roomId) {
+    const tokens = await this._getToken({roomId})
+    return tokens.room_token
+  }
+
+  async _getToken({ userId, roomId, rest }) {
+    const response = await axios.get(
+      "https://v2.stringee.com/web-sdk-conference-samples/php/token_helper.php",
+      {
+        params: {
+          keySid: this.projectId,
+          keySecret: this.projectSecret,
+          userId,
+          roomId,
+          rest
+        }
       }
-    })
-    
+    );
+
+    const tokens = response.data;
+    console.log({ tokens });
     // {
     //   rest_access_token: "",
     //   room_token: '',
     //   access_token: ''
     // };
-    const tokens = response.data;
-    console.log({tokens});
-    return tokens
+    return tokens;
+  }
+
+  _authHeader() {
+    return {
+      "X-STRINGEE-AUTH": this.restToken
+    };
   }
 }
 
-const api = new API(PROJECT_ID, PROJECT_SECRET)
+const api = new API(PROJECT_ID, PROJECT_SECRET);
