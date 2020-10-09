@@ -1,4 +1,4 @@
-const videoContainer = document.querySelector('#videos')
+const videoContainer = document.querySelector("#videos");
 
 const vm = new Vue({
   el: "#app",
@@ -25,68 +25,87 @@ const vm = new Vue({
     if (roomId) {
       this.roomId = roomId;
       this.joinRoom = true;
+      
+      await this.join();
     }
   },
   methods: {
     subscribe: async function(trackInfo) {
-      const track = await this.room.subscribe(trackInfo.serverId)
-      track.on('ready', () => {
-         videoContainer.appendChild(track.attach());
-      })
+      const track = await this.room.subscribe(trackInfo.serverId);
+      track.on("ready", () => {
+        const videoElement = track.attach();
+        videoElement.setAttribute("muted", "true");
+         videoElement.setAttribute("playsinline", "true");
+        videoContainer.appendChild(videoElement);
+      });
     },
     authen: function() {
-      return new Promise(async(resolve) => {
+      return new Promise(async resolve => {
         this.userId = `hoang_dep_trai_${Math.random().toFixed(4) * 1000}`; // window.prompt('Bạn tên gì ahihi?')
 
-      const userToken = await api.getUserToken(this.userId);
-      this.userToken = userToken;
+        const userToken = await api.getUserToken(this.userId);
+        this.userToken = userToken;
 
-      if (!this.callClient) {
-        const client = new StringeeClient();
+        if (!this.callClient) {
+          const client = new StringeeClient();
 
-        client.on("authen", function(res) {
-          console.log("on authen: ", res);
-          resolve(res)
-        });
-        this.callClient = client;
-      }
-        this.callClient.connect(userToken);  
-      })
+          client.on("authen", function(res) {
+            console.log("on authen: ", res);
+            resolve(res);
+          });
+          this.callClient = client;
+        }
+        this.callClient.connect(userToken);
+      });
     },
     login: async function() {
       await this.authen();
-      
-      const localTrack = await StringeeVideo.createLocalVideoTrack(this.callClient, {
-        audio: true, video: true, screen: false, videoDimensions: {width: 640, height: 360}
-      })
-      
-      console.log({localTrack});
-      videoContainer.appendChild(localTrack.attach());
-      
-      const roomData = await StringeeVideo.joinRoom(this.callClient, this.roomToken);
-      console.log({roomData});
+
+      const localTrack = await StringeeVideo.createLocalVideoTrack(
+        this.callClient,
+        {
+          audio: true,
+          video: true,
+          screen: false,
+          videoDimensions: { width: 640, height: 360 }
+        }
+      );
+
+      console.log({ localTrack });
+      const videoElement = localTrack.attach();
+      videoElement.setAttribute("muted", "true");
+      videoElement.setAttribute("playsinline", "true");
+      videoContainer.appendChild(videoElement);
+
+      const roomData = await StringeeVideo.joinRoom(
+        this.callClient,
+        this.roomToken
+      );
+      console.log({ roomData });
       const room = roomData.room;
       this.room = room;
-      console.log({room})
+      console.log({ room });
       room.clearAllOnMethos();
-      
-      room.on('joinroom', (e) => console.log('on join room', e.info));
-      room.on('message', (e) => {console.log('on message, e')});
-      
-      room.on('addtrack', (e) => {
+
+      room.on("joinroom", e => console.log("on join room", e.info));
+      room.on("message", e => {
+        console.log("on message, e");
+      });
+
+      room.on("addtrack", e => {
         const track = e.info.track;
-        
-        console.log('addtrack', track);
+
+        console.log("addtrack", track);
         if (track.serverId === localTrack.serverId) {
-          console.log('local')
-          return
+          console.log("local");
+          return;
         }
-        this.subscribe(track)
-      })
-      
-      await room.publish(localTrack)
-      console.log('room publish successful')
-      roomData.listTracksInfo.forEach(info => this.subscribe(info))
+        this.subscribe(track);
+      });
+
+      await room.publish(localTrack);
+      console.log("room publish successful");
+      roomData.listTracksInfo.forEach(info => this.subscribe(info));
     },
     createRoom: async function() {
       const room = await api.createRoom();
@@ -105,7 +124,7 @@ const vm = new Vue({
       // Lay room token
       const roomToken = await api.getRoomToken(this.roomId);
       this.roomToken = roomToken;
-      
+
       await this.login();
     }
   }
