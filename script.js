@@ -8,6 +8,7 @@ const vm = new Vue({
     userToken: "",
     roomId: "",
     roomToken: "",
+    room: undefined,
     callClient: undefined,
     joinRoom: false
   },
@@ -28,7 +29,7 @@ const vm = new Vue({
   },
   methods: {
     login: async function() {
-      this.userId = "hoang_dep_trai"; // window.prompt('Bạn tên gì ahihi?')
+      this.userId = `hoang_dep_trai_${Math.random().toFixed(4) * 1000}`; // window.prompt('Bạn tên gì ahihi?')
 
       const userToken = await api.getUserToken(this.userId);
       this.userToken = userToken;
@@ -42,6 +43,20 @@ const vm = new Vue({
         this.callClient = client;
       }
       this.callClient.connect(userToken);
+      
+      const localTrack = await StringeeVideo.createLocalVideoTrack(this.callClient, {
+        audio: true, video: true, screen: false, videoDimensions: {width: 640, height: 360}
+      })
+      
+      console.log({localTrack});
+      videoContainer.appendChild(localTrack.attach());
+      
+      const room = await StringeeVideo.joinRoom(this.callClient, this.roomToken);
+      console.log({room})
+      room.clearAllOnMethos();
+      room.on('message', (e) => {console.log('on message, e')});
+      
+      await room.publish(localTrack)
     },
     createRoom: async function() {
       const room = await api.createRoom();
