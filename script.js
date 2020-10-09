@@ -34,8 +34,9 @@ const vm = new Vue({
          videoContainer.appendChild(track.attach());
       })
     },
-    login: async function() {
-      this.userId = `hoang_dep_trai_${Math.random().toFixed(4) * 1000}`; // window.prompt('Bạn tên gì ahihi?')
+    authen: function() {
+      return new Promise(async(resolve) => {
+        this.userId = `hoang_dep_trai_${Math.random().toFixed(4) * 1000}`; // window.prompt('Bạn tên gì ahihi?')
 
       const userToken = await api.getUserToken(this.userId);
       this.userToken = userToken;
@@ -45,10 +46,15 @@ const vm = new Vue({
 
         client.on("authen", function(res) {
           console.log("on authen: ", res);
+          resolve(res)
         });
         this.callClient = client;
       }
-      this.callClient.connect(userToken);
+        this.callClient.connect(userToken);  
+      })
+    },
+    login: async function() {
+      await this.authen();
       
       const localTrack = await StringeeVideo.createLocalVideoTrack(this.callClient, {
         audio: true, video: true, screen: false, videoDimensions: {width: 640, height: 360}
@@ -60,8 +66,11 @@ const vm = new Vue({
       const roomData = await StringeeVideo.joinRoom(this.callClient, this.roomToken);
       console.log({roomData});
       const room = roomData.room;
+      this.room = room;
       console.log({room})
       room.clearAllOnMethos();
+      
+      room.on('joinroom', (e) => console.log('on join room', e.info));
       room.on('message', (e) => {console.log('on message, e')});
       
       room.on('addtrack', (e) => {
@@ -76,6 +85,7 @@ const vm = new Vue({
       })
       
       await room.publish(localTrack)
+      console.log('room publish successful')
       roomData.listTracksInfo.forEach(info => this.subscribe(info))
     },
     createRoom: async function() {
@@ -93,7 +103,10 @@ const vm = new Vue({
     join: async function() {
       // Lay room id
       // Lay room token
-      // join room lam tro
+      const roomToken = await api.getRoomToken(this.roomId);
+      this.roomToken = roomToken;
+      
+      await this.login();
     }
   }
 });
