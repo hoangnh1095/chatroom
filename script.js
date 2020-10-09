@@ -28,6 +28,12 @@ const vm = new Vue({
     }
   },
   methods: {
+    subscribe: async function(trackInfo) {
+      const track = await this.room.subscribe(trackInfo.serverId)
+      track.on('ready', () => {
+         videoContainer.appendChild(track.attach());
+      })
+    },
     login: async function() {
       this.userId = `hoang_dep_trai_${Math.random().toFixed(4) * 1000}`; // window.prompt('Bạn tên gì ahihi?')
 
@@ -51,12 +57,26 @@ const vm = new Vue({
       console.log({localTrack});
       videoContainer.appendChild(localTrack.attach());
       
-      const room = await StringeeVideo.joinRoom(this.callClient, this.roomToken);
+      const roomData = await StringeeVideo.joinRoom(this.callClient, this.roomToken);
+      console.log({roomData});
+      const room = roomData.room;
       console.log({room})
       room.clearAllOnMethos();
       room.on('message', (e) => {console.log('on message, e')});
       
+      room.on('addtrack', (e) => {
+        const track = e.info.track;
+        
+        console.log('addtrack', track);
+        if (track.serverId === localTrack.serverId) {
+          console.log('local')
+          return
+        }
+        this.subscribe(track)
+      })
+      
       await room.publish(localTrack)
+      roomData.listTracksInfo.forEach(info => this.subscribe(info))
     },
     createRoom: async function() {
       const room = await api.createRoom();
@@ -70,7 +90,7 @@ const vm = new Vue({
       // Create xong join room lun
       await this.login();
     },
-    joinRoom: async function() {
+    join: async function() {
       // Lay room id
       // Lay room token
       // join room lam tro
