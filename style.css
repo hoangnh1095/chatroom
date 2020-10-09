@@ -1,1 +1,14 @@
 [v-cloak] { display: none; }
+
+#videos {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.video-call {
+  flex-basis: 480px;
+  height: 270px;
+  background: #424141;
+  padding: 5px;
+}
