@@ -25,7 +25,7 @@ const vm = new Vue({
     if (roomId) {
       this.roomId = roomId;
       this.joinRoom = true;
-      
+
       await this.join();
     }
   },
@@ -35,7 +35,7 @@ const vm = new Vue({
       track.on("ready", () => {
         const videoElement = track.attach();
         videoElement.setAttribute("muted", "true");
-         videoElement.setAttribute("playsinline", "true");
+        videoElement.setAttribute("playsinline", "true");
         videoContainer.appendChild(videoElement);
       });
     },
@@ -58,15 +58,13 @@ const vm = new Vue({
         this.callClient.connect(userToken);
       });
     },
-    login: async function() {
-      await this.authen();
-
+    publish: async function(screenSharing = false) {
       const localTrack = await StringeeVideo.createLocalVideoTrack(
         this.callClient,
         {
           audio: true,
           video: true,
-          screen: false,
+          screen: screenSharing,
           videoDimensions: { width: 640, height: 360 }
         }
       );
@@ -88,6 +86,9 @@ const vm = new Vue({
       room.clearAllOnMethos();
 
       room.on("joinroom", e => console.log("on join room", e.info));
+      room.on('leaveroom', function (event) {
+                            console.log('on leave room: ' + JSON.stringify(event.info));
+                        });
       room.on("message", e => {
         console.log("on message, e");
       });
@@ -101,6 +102,16 @@ const vm = new Vue({
           return;
         }
         this.subscribe(track);
+      });
+      room.on("removetrack", e => {
+        console.log('on remove track', event);
+        const track = event.track;
+        if (!track) {
+          return;
+        }
+
+        const mediaElements = track.detach();
+        mediaElements.forEach(element => element.remove());
       });
 
       await room.publish(localTrack);
@@ -117,7 +128,8 @@ const vm = new Vue({
       console.log({ roomId, roomToken });
 
       // Create xong join room lun
-      await this.login();
+      await this.authen();
+      await this.publish();
     },
     join: async function() {
       // Lay room id
@@ -125,7 +137,8 @@ const vm = new Vue({
       const roomToken = await api.getRoomToken(this.roomId);
       this.roomToken = roomToken;
 
-      await this.login();
+      await this.authen();
+      await this.publish();
     }
   }
 });

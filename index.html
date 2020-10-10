@@ -23,26 +23,31 @@
       </h1>
 
       <div>
-        <button v-on:click="createRoom">
+        <button @click="createRoom">
           Tạo Meeting
         </button>
 
         <button v-on:click="join">
           Join Meeting
         </button>
+
+        <button @click="publish(true)">
+          Share screen
+        </button>
       </div>
 
       <div v-if="!joinRoom && roomId">
-        Ahihi, hãy gửi link này cho bạn bè join room nhé <a v-bind:href="roomUrl" target="_blank">{{roomUrl}}</a>
+        Ahihi, hãy gửi link này cho bạn bè join room nhé
+        <a v-bind:href="roomUrl" target="_blank">{{roomUrl}}</a>
       </div>
-      
+
       <div v-if="joinRoom && roomId">
         Bạn đã gia nhập room {{roomId}}
       </div>
     </div>
-    
+
     <div id="videos">
-<!--       <video class="video-call" controls>
+      <!--       <video class="video-call" controls>
   <source src="mov_bbb.mp4" type="video/mp4">
   <source src="mov_bbb.ogg" type="video/ogg">
   Your browser does not support HTML video.
