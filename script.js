@@ -3,7 +3,6 @@ const videoContainer = document.querySelector("#videos");
 const vm = new Vue({
   el: "#app",
   data: {
-    message: "🐵 Hello World 🔮",
     userId: "",
     userToken: "",
     roomId: "",
@@ -86,9 +85,9 @@ const vm = new Vue({
       room.clearAllOnMethos();
 
       room.on("joinroom", e => console.log("on join room", e.info));
-      room.on('leaveroom', function (event) {
-                            console.log('on leave room: ' + JSON.stringify(event.info));
-                        });
+      room.on("leaveroom", function(event) {
+        console.log("on leave room: " + JSON.stringify(event.info));
+      });
       room.on("message", e => {
         console.log("on message, e");
       });
@@ -104,8 +103,7 @@ const vm = new Vue({
         this.subscribe(track);
       });
       room.on("removetrack", e => {
-        console.log('on remove track', event);
-        const track = event.track;
+        const track = e.track;
         if (!track) {
           return;
         }
@@ -139,6 +137,14 @@ const vm = new Vue({
 
       await this.authen();
       await this.publish();
+    },
+    joinWithId: async function() {
+      const roomId = prompt('Dán Room ID vào đây nhé!');
+      if (roomId) {
+        this.roomId = roomId;
+        this.joinRoom = true;
+        await this.join();
+      }
     }
   }
 });

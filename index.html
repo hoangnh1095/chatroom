@@ -27,7 +27,7 @@
           Tạo Meeting
         </button>
 
-        <button v-on:click="join">
+        <button v-on:click="joinWithId">
           Join Meeting
         </button>
 
@@ -38,7 +38,8 @@
 
       <div v-if="!joinRoom && roomId">
         Ahihi, hãy gửi link này cho bạn bè join room nhé
-        <a v-bind:href="roomUrl" target="_blank">{{roomUrl}}</a>
+        <a v-bind:href="roomUrl" target="_blank">{{roomUrl}}</a>. <br />
+        Hoặc bạn cũng có thể copy <code>{{roomId}}</code> để share.
       </div>
 
       <div v-if="joinRoom && roomId">
@@ -47,26 +48,7 @@
     </div>
 
     <div id="videos">
-      <!--       <video class="video-call" controls>
-  <source src="mov_bbb.mp4" type="video/mp4">
-  <source src="mov_bbb.ogg" type="video/ogg">
-  Your browser does not support HTML video.
-</video>
-         <video class="video-call" controls>
-  <source src="mov_bbb.mp4" type="video/mp4">
-  <source src="mov_bbb.ogg" type="video/ogg">
-  Your browser does not support HTML video.
-</video>
-         <video class="video-call" controls>
-  <source src="mov_bbb.mp4" type="video/mp4">
-  <source src="mov_bbb.ogg" type="video/ogg">
-  Your browser does not support HTML video.
-</video>
-         <video class="video-call" controls>
-  <source src="mov_bbb.mp4" type="video/mp4">
-  <source src="mov_bbb.ogg" type="video/ogg">
-  Your browser does not support HTML video.
-</video> -->
+     
     </div>
   </body>
   <script src="/api.js"></script>
