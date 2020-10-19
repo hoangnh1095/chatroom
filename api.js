@@ -81,14 +81,7 @@ class API {
 
   isSafari() {
     const ua = navigator.userAgent.toLowerCase();
-    return ua.includes('safari')
-    if (ua.indexOf("safari") != -1) {
-      if (ua.indexOf("chrome") > -1) {
-      } else {
-        return true;
-      }
-    }
-    return false;
+    return !ua.includes('chrome') && ua.includes('safari');
   }
 
   _authHeader() {

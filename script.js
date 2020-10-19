@@ -38,8 +38,11 @@ const vm = new Vue({
     },
     addVideo: function(video) {
       video.setAttribute("controls", "true");
-      video.setAttribute("muted", "true");
-      video.setAttribute("playsinline", "true");
+      if (api.isSafari()) {
+        video.setAttribute("muted", "true");
+        video.setAttribute("playsinline", "true");
+      }
+
       videoContainer.appendChild(video);
     },
     authen: function() {
