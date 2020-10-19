@@ -44,15 +44,15 @@ class API {
 
     return restToken;
   }
-  
+
   async getUserToken(userId) {
-    const tokens = await this._getToken({userId})
-    return tokens.access_token
+    const tokens = await this._getToken({ userId });
+    return tokens.access_token;
   }
-  
+
   async getRoomToken(roomId) {
-    const tokens = await this._getToken({roomId})
-    return tokens.room_token
+    const tokens = await this._getToken({ roomId });
+    return tokens.room_token;
   }
 
   async _getToken({ userId, roomId, rest }) {
@@ -77,6 +77,18 @@ class API {
     //   access_token: ''
     // };
     return tokens;
+  }
+
+  isSafari() {
+    const ua = navigator.userAgent.toLowerCase();
+    return ua.includes('safari')
+    if (ua.indexOf("safari") != -1) {
+      if (ua.indexOf("chrome") > -1) {
+      } else {
+        return true;
+      }
+    }
+    return false;
   }
 
   _authHeader() {

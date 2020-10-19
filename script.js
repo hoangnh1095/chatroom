@@ -33,10 +33,14 @@ const vm = new Vue({
       const track = await this.room.subscribe(trackInfo.serverId);
       track.on("ready", () => {
         const videoElement = track.attach();
-        videoElement.setAttribute("muted", "true");
-        videoElement.setAttribute("playsinline", "true");
-        videoContainer.appendChild(videoElement);
+        this.addVideo(videoElement);
       });
+    },
+    addVideo: function(video) {
+      video.setAttribute("controls", "true");
+      video.setAttribute("muted", "true");
+      video.setAttribute("playsinline", "true");
+      videoContainer.appendChild(video);
     },
     authen: function() {
       return new Promise(async resolve => {
@@ -70,9 +74,7 @@ const vm = new Vue({
 
       console.log({ localTrack });
       const videoElement = localTrack.attach();
-      videoElement.setAttribute("muted", "true");
-      videoElement.setAttribute("playsinline", "true");
-      videoContainer.appendChild(videoElement);
+      this.addVideo(videoElement);
 
       const roomData = await StringeeVideo.joinRoom(
         this.callClient,
