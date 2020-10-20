@@ -28,7 +28,6 @@ const vm = new Vue({
     }
   },
   methods: {
-
     authen: function() {
       return new Promise(async resolve => {
         const userId = `${(Math.random() * 100000).toFixed(6)}`;
@@ -58,7 +57,6 @@ const vm = new Vue({
         }
       );
 
-      console.log({ localTrack });
       const videoElement = localTrack.attach();
       this.addVideo(videoElement);
 
@@ -66,38 +64,38 @@ const vm = new Vue({
         this.callClient,
         this.roomToken
       );
-      console.log({ roomData });
       const room = roomData.room;
+      console.log({ roomData, room });
 
-      this.room = room;
-      console.log({ room });
-      room.clearAllOnMethos();
+      if (!this.room) {
+        this.room = room;
+        room.clearAllOnMethos();
+        room.on("addtrack", e => {
+          const track = e.info.track;
 
-      room.on("addtrack", e => {
-        const track = e.info.track;
+          console.log("addtrack", track);
+          if (track.serverId === localTrack.serverId) {
+            console.log("local");
+            return;
+          }
+          this.subscribe(track);
+        });
+        room.on("removetrack", e => {
+          const track = e.track;
+          if (!track) {
+            return;
+          }
 
-        console.log("addtrack", track);
-        if (track.serverId === localTrack.serverId) {
-          console.log("local");
-          return;
-        }
-        this.subscribe(track);
-      });
-      room.on("removetrack", e => {
-        const track = e.track;
-        if (!track) {
-          return;
-        }
+          const mediaElements = track.detach();
+          mediaElements.forEach(element => element.remove());
+        });
 
-        const mediaElements = track.detach();
-        mediaElements.forEach(element => element.remove());
-      });
+        // Join existing tracks
+        roomData.listTracksInfo.forEach(info => this.subscribe(info));
+      }
 
       await room.publish(localTrack);
       console.log("room publish successful");
-      
-      // Join existing room
-      roomData.listTracksInfo.forEach(info => this.subscribe(info));
     },
     createRoom: async function() {
       const room = await api.createRoom();
@@ -120,7 +118,7 @@ const vm = new Vue({
       await this.publish();
     },
     joinWithId: async function() {
-      const roomId = prompt('Dán Room ID vào đây nhé!');
+      const roomId = prompt("Dán Room ID vào đây nhé!");
       if (roomId) {
         this.roomId = roomId;
         this.joinRoom = true;
@@ -136,12 +134,8 @@ const vm = new Vue({
     },
     addVideo: function(video) {
       video.setAttribute("controls", "true");
-      if (api.isSafari()) {
-        video.setAttribute("muted", "true");
-        video.setAttribute("playsinline", "true");
-      }
-
+      video.setAttribute("playsinline", "true");
       videoContainer.appendChild(video);
-    },
+    }
   }
 });

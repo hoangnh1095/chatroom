@@ -8,8 +8,8 @@
     <title>Hello!</title>
 
     <!-- import the webpage's stylesheet -->
-    <link rel="stylesheet" href="/style.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link rel="stylesheet" href="/style.css" />
 
     <!-- import the webpage's javascript file -->
 
@@ -18,28 +18,28 @@
     <script src="https://cdn.stringee.com/sdk/web/2.2.1/stringee-web-sdk.min.js"></script>
   </head>
   <body>
-    <div v-cloak id="app">
-      <h1>
-        Ứng dụng Clone Zoom cực cool ngầu :3.
+    <div class="container has-text-centered" v-cloak id="app">
+      <h1 class="title">
+        Ứng dụng Clone Zoom cực cool ngầu với <span>Stringee API</span>
       </h1>
 
       <div>
-        <button @click="createRoom">
+        <button v-if="!room" @click="createRoom">
           Tạo Meeting
         </button>
 
-        <button v-on:click="joinWithId">
+        <button v-if="!room" v-on:click="joinWithId">
           Join Meeting
+        </button>
+        
+         <button v-if="room" @click="publish(true)">
+          Share screen
         </button>
       </div>
       
       <div>
-        <button @click="publish(true)">
-          Leave meeting
-        </button>
-        <button @click="publish(true)">
-          Share screen
-        </button>
+
+       
       </div>
 
       <div v-if="!joinRoom && roomId">

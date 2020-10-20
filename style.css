@@ -1,5 +1,9 @@
 [v-cloak] { display: none; }
 
+.header-text {
+  color: #ff4954;
+}
+
 #videos {
   display: flex;
   flex-wrap: wrap;
