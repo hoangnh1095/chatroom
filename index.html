@@ -8,7 +8,10 @@
     <title>Hello!</title>
 
     <!-- import the webpage's stylesheet -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css"
+    />
     <link rel="stylesheet" href="/style.css" />
 
     <!-- import the webpage's javascript file -->
@@ -20,41 +23,40 @@
   <body>
     <div class="container has-text-centered" v-cloak id="app">
       <h1 class="title">
-        Ứng dụng Clone Zoom cực cool ngầu với <span>Stringee API</span>
+        Ứng dụng Clone Zoom cực cool ngầu với
+        <span class="header-highlight">Stringee API</span>
       </h1>
 
       <div>
-        <button v-if="!room" @click="createRoom">
+        <button class="button is-primary" v-if="!room" @click="createRoom">
           Tạo Meeting
         </button>
 
-        <button v-if="!room" v-on:click="joinWithId">
+        <button class="button is-info" v-if="!room" @click="joinWithId">
           Join Meeting
         </button>
-        
-         <button v-if="room" @click="publish(true)">
-          Share screen
+
+        <button class="button is-info" v-if="room" @click="publish(true)">
+          Share Desktop
         </button>
       </div>
-      
-      <div>
 
-       
-      </div>
-
-      <div v-if="!joinRoom && roomId">
-        Ahihi, hãy gửi link này cho bạn bè join room nhé
-        <a v-bind:href="roomUrl" target="_blank">{{roomUrl}}</a>. <br />
-        Hoặc bạn cũng có thể copy <code>{{roomId}}</code> để share.
-      </div>
-
-      <div v-if="joinRoom && roomId">
-        Bạn đã gia nhập room {{roomId}}
+      <div v-if="roomId" class="info">
+        <p>
+          Bạn đang ở trong room <strong>{{roomId}}</strong>.
+        </p>
+        <p>
+          Gửi link này cho bạn bè cùng join room nhé
+          <a v-bind:href="roomUrl" target="_blank">{{roomUrl}}</a>.
+        </p>
+        <p>
+          Hoặc bạn cũng có thể copy <code>{{roomId}}</code> để share.
+        </p>    
       </div>
     </div>
 
-    <div id="videos">
-     
+    <div class="container">
+      <div id="videos"></div>
     </div>
   </body>
   <script src="/api.js"></script>

@@ -7,8 +7,7 @@ const vm = new Vue({
     roomId: "",
     roomToken: "",
     room: undefined,
-    callClient: undefined,
-    joinRoom: false
+    callClient: undefined
   },
   computed: {
     roomUrl: function() {
@@ -22,7 +21,6 @@ const vm = new Vue({
     const roomId = urlParams.get("room");
     if (roomId) {
       this.roomId = roomId;
-      this.joinRoom = true;
 
       await this.join();
     }
@@ -121,7 +119,6 @@ const vm = new Vue({
       const roomId = prompt("Dán Room ID vào đây nhé!");
       if (roomId) {
         this.roomId = roomId;
-        this.joinRoom = true;
         await this.join();
       }
     },
