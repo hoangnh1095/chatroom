@@ -28,22 +28,7 @@ const vm = new Vue({
     }
   },
   methods: {
-    subscribe: async function(trackInfo) {
-      const track = await this.room.subscribe(trackInfo.serverId);
-      track.on("ready", () => {
-        const videoElement = track.attach();
-        this.addVideo(videoElement);
-      });
-    },
-    addVideo: function(video) {
-      video.setAttribute("controls", "true");
-      if (api.isSafari()) {
-        video.setAttribute("muted", "true");
-        video.setAttribute("playsinline", "true");
-      }
 
-      videoContainer.appendChild(video);
-    },
     authen: function() {
       return new Promise(async resolve => {
         const userId = `${(Math.random() * 100000).toFixed(6)}`;
@@ -110,6 +95,8 @@ const vm = new Vue({
 
       await room.publish(localTrack);
       console.log("room publish successful");
+      
+      // Join existing room
       roomData.listTracksInfo.forEach(info => this.subscribe(info));
     },
     createRoom: async function() {
@@ -139,6 +126,22 @@ const vm = new Vue({
         this.joinRoom = true;
         await this.join();
       }
-    }
+    },
+    subscribe: async function(trackInfo) {
+      const track = await this.room.subscribe(trackInfo.serverId);
+      track.on("ready", () => {
+        const videoElement = track.attach();
+        this.addVideo(videoElement);
+      });
+    },
+    addVideo: function(video) {
+      video.setAttribute("controls", "true");
+      if (api.isSafari()) {
+        video.setAttribute("muted", "true");
+        video.setAttribute("playsinline", "true");
+      }
+
+      videoContainer.appendChild(video);
+    },
   }
 });
