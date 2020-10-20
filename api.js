@@ -36,6 +36,25 @@ class API {
     console.log({ rooms });
     return rooms;
   }
+  
+  async deleteRoom(roomId) {
+    const response = await axios.put(`${BASE_URL}/delete`, {
+      roomId
+    }, {
+      headers: this._authHeader()
+    })
+    
+    console.log({response})
+    
+    return response.data;
+  }
+  
+  async clearAllRooms() {
+    const rooms = await this.listRoom()
+    const response = await Promise.all(rooms.map(room => this.deleteRoom(room.roomId)))
+    
+    return response;
+  }
 
   async setRestToken() {
     const tokens = await this._getToken({ rest: true });
@@ -71,11 +90,6 @@ class API {
 
     const tokens = response.data;
     console.log({ tokens });
-    // {
-    //   rest_access_token: "",
-    //   room_token: '',
-    //   access_token: ''
-    // };
     return tokens;
   }
 
