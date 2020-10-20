@@ -42,16 +42,12 @@
       </div>
 
       <div v-if="roomId" class="info">
-        <p>
-          Bạn đang ở trong room <strong>{{roomId}}</strong>.
-        </p>
+        <p>Bạn đang ở trong room <strong>{{roomId}}</strong>.</p>
         <p>
           Gửi link này cho bạn bè cùng join room nhé
           <a v-bind:href="roomUrl" target="_blank">{{roomUrl}}</a>.
         </p>
-        <p>
-          Hoặc bạn cũng có thể copy <code>{{roomId}}</code> để share.
-        </p>    
+        <p>Hoặc bạn cũng có thể copy <code>{{roomId}}</code> để share.</p>
       </div>
     </div>
 
