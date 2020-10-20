@@ -19,7 +19,7 @@
   <body>
     <div v-cloak id="app">
       <h1>
-        Ứng dụng Clone Zoom cực cool ngầu :3. Welcome {{userId}}
+        Ứng dụng Clone Zoom cực cool ngầu :3.
       </h1>
 
       <div>
@@ -30,7 +30,12 @@
         <button v-on:click="joinWithId">
           Join Meeting
         </button>
-
+      </div>
+      
+      <div>
+        <button @click="publish(true)">
+          Leave meeting
+        </button>
         <button @click="publish(true)">
           Share screen
         </button>

@@ -3,7 +3,6 @@ const videoContainer = document.querySelector("#videos");
 const vm = new Vue({
   el: "#app",
   data: {
-    userId: "",
     userToken: "",
     roomId: "",
     roomToken: "",
@@ -47,9 +46,8 @@ const vm = new Vue({
     },
     authen: function() {
       return new Promise(async resolve => {
-        this.userId = `hoang_dep_trai_${Math.random().toFixed(4) * 1000}`; // window.prompt('Bạn tên gì ahihi?')
-
-        const userToken = await api.getUserToken(this.userId);
+        const userId = `${(Math.random() * 100000).toFixed(6)}`;
+        const userToken = await api.getUserToken(userId);
         this.userToken = userToken;
 
         if (!this.callClient) {
@@ -85,17 +83,10 @@ const vm = new Vue({
       );
       console.log({ roomData });
       const room = roomData.room;
+
       this.room = room;
       console.log({ room });
       room.clearAllOnMethos();
-
-      room.on("joinroom", e => console.log("on join room", e.info));
-      room.on("leaveroom", function(event) {
-        console.log("on leave room: " + JSON.stringify(event.info));
-      });
-      room.on("message", e => {
-        console.log("on message, e");
-      });
 
       room.on("addtrack", e => {
         const track = e.info.track;
@@ -135,8 +126,6 @@ const vm = new Vue({
       await this.publish();
     },
     join: async function() {
-      // Lay room id
-      // Lay room token
       const roomToken = await api.getRoomToken(this.roomId);
       this.roomToken = roomToken;
 
@@ -153,5 +142,3 @@ const vm = new Vue({
     }
   }
 });
-
-vm.message = "hoang_cute";
