@@ -104,7 +104,6 @@ const vm = new Vue({
       this.roomToken = roomToken;
       console.log({ roomId, roomToken });
 
-      // Create xong join room lun
       await this.authen();
       await this.publish();
     },
