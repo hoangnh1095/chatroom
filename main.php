@@ -1,3 +1,7 @@
+<?php
+  session_start();
+    include("ket_noi.php"); 
+?> 
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -12,7 +16,7 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css"
     />
-    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="./style.css" />
 
     <!-- import the webpage's javascript file -->
 
@@ -21,15 +25,39 @@
     <script src="https://cdn.stringee.com/sdk/web/2.2.1/stringee-web-sdk.min.js"></script>
   </head>
   <body>
+
+
     <div class="container has-text-centered" v-cloak id="app">
       <h1 class="title">
-        Chào mừng bạn đến với 
+        Chào mừng bạn đến với
+
+
         <span class="header-highlight">VIX</span>
       </h1>
 
       <div>
+        <ul>
+                      
+                    <?php
+              
+              if(isset($_SESSION['username'])){
+                echo"<li>";
+                echo "Chào  ".$_SESSION['username'];?>
+                <a href="index.php"><b><i> thoát</i></b></a></li>
+              <?Php
+                session_destroy();
+                }else{
+                echo "";?>
+                <li> <a href="login_SignUp.php"><span class="button is-primary">Đăng Nhập</span></a></li>
+              <?Php
+              } 
+            ?>    
+                      
+                    </ul>
+
         <button class="button is-primary" v-if="!room" @click="createRoom">
           Create Meeting
+          
         </button>
 
         <button class="button is-info" v-if="!room" @click="joinWithId">
@@ -39,6 +67,10 @@
         <button class="button is-info" v-if="room" @click="publish(true)">
           Share Desktop
         </button>
+      </div>
+      <div>
+        
+
       </div>
 
       <div v-if="roomId" class="info">
@@ -54,7 +86,8 @@
     <div class="container">
       <div id="videos"></div>
     </div>
+
   </body>
-  <script src="/api.js"></script>
-  <script src="/script.js"></script>
+  <script src="./api.js"></script>
+  <script src="./script.js"></script>
 </html>
